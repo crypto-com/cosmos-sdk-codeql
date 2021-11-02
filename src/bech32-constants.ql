@@ -12,5 +12,6 @@ import go
 from ConstantName cn
 where
   cn.toString().matches("Bech32%") and
-  cn.getLocation().getFile().getPackageName() != "types"
+  cn.getLocation().getFile().getPackageName() != "types" and
+  cn.getLocation().getFile().getPackageName() != "config"
 select cn, "Directly using the bech32 constants"
