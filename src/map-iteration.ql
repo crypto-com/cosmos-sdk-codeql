@@ -42,5 +42,13 @@ where
     unsorted.getTarget() = sorted.getTarget() and
     loop.getParent*().getAChild*() = sort
   ) and
-  not isIrrelevantPackage(loop.getFile().getPackageName())
+  not isIrrelevantPackage(loop.getFile().getPackageName()) and
+  // explicit comment explaining why it is safe
+  // TODO: extract to a common predicate or a class
+  not exists(CommentGroup c |
+    loop.getLocation().getStartLine() - 1 = c.getLocation().getStartLine() or
+    loop.getEnclosingFunction().getLocation().getStartLine() - 1 = c.getLocation().getStartLine()
+  |
+    c.getAComment().getText().matches("%SAFE:%")
+  )
 select loop, "Iteration over map"

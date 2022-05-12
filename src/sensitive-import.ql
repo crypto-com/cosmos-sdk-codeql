@@ -34,5 +34,12 @@ predicate isIrrelevantPackage(string packageName) {
 from ImportSpec imp
 where
   isSensitiveImport(imp.getPath()) and
-  not isIrrelevantPackage(imp.getFile().getPackageName())
+  not isIrrelevantPackage(imp.getFile().getPackageName()) and
+  // explicit comment explaining why it is safe
+  // TODO: extract to a common predicate or a class
+  not exists(CommentGroup c |
+    imp.getLocation().getStartLine() - 1 = c.getLocation().getStartLine()
+  |
+    c.getAComment().getText().matches("%SAFE:%")
+  )
 select imp, imp.getFile().getPackageName()

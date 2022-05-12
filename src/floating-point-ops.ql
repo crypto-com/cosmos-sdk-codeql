@@ -15,5 +15,13 @@ where
     e.getLeftOperand().getType() instanceof FloatType or
     e.getRightOperand().getType() instanceof FloatType
   ) and
-  e.getLocation().getFile().getPackageName() != "simulation"
+  e.getLocation().getFile().getPackageName() != "simulation" and
+  // explicit comment explaining why it is safe
+  // TODO: extract to a common predicate or a class
+  not exists(CommentGroup c |
+    e.getLocation().getStartLine() - 1 = c.getLocation().getStartLine() or
+    e.getEnclosingFunction().getLocation().getStartLine() - 1 = c.getLocation().getStartLine()
+  |
+    c.getAComment().getText().matches("%SAFE:%")
+  )
 select e, "Floating point arithmetic"
