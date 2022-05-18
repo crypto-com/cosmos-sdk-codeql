@@ -51,4 +51,4 @@ where
   |
     c.getAComment().getText().matches("%SAFE:%")
   )
-select loop, "Iteration over map"
+select loop, "Iteration over map may be a possible source of non-determinism"

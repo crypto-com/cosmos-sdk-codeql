@@ -42,4 +42,5 @@ where
   |
     c.getAComment().getText().matches("%SAFE:%")
   )
-select imp, imp.getFile().getPackageName()
+select imp,
+  "Certain system packages contain functions which may be a possible source of non-determinism"

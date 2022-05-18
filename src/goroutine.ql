@@ -36,4 +36,4 @@ where
   not goroutine.getFile().getBaseName().matches("%.pb.%") and
   not goroutine.getCall().getCalleeName().matches("%Snapshot%") and
   not isIrrelevantPackage(goroutine.getFile().getPackageName())
-select goroutine, goroutine.getFile().getPackageName()
+select goroutine, "Spawning a Go routine may be a possible source of non-determinism"

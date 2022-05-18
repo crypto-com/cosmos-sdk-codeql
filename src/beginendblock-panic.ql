@@ -49,4 +49,5 @@ where
   |
     c.getAComment().getText().matches("%SAFE:%")
   )
-select panicCall, "Possible panic in BeginBock- or EndBlock-related consensus methods"
+select panicCall,
+  "Possible panics in BeginBock- or EndBlock-related consensus methods could cause a chain halt"

@@ -14,4 +14,4 @@ where
   cn.toString().matches("Bech32%") and
   cn.getLocation().getFile().getPackageName() != "types" and
   cn.getLocation().getFile().getPackageName() != "config"
-select cn, "Directly using the bech32 constants"
+select cn, "Directly using the bech32 constants instead of the configuration values"

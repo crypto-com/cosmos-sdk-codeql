@@ -24,4 +24,5 @@ where
   |
     c.getAComment().getText().matches("%SAFE:%")
   )
-select e, "Floating point arithmetic"
+select e,
+  "Floating point arithmetic operations are not associative and a possible source of non-determinism"

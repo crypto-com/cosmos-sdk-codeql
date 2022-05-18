@@ -2,7 +2,7 @@
 library: false
 name: crypto-com/cosmos-sdk-codeql
 extractor: go
-version: 0.0.6
+version: 0.0.7
 description: A query suite for common bug patterns in Cosmos SDK-based applications
 default-suite:
     - query: src/bech32-constants.ql

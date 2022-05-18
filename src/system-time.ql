@@ -46,4 +46,4 @@ where
   |
     c.getAComment().getText().matches("%SAFE:%")
   )
-select call, "Calling the system time"
+select call, "Calling the system time may be a possible source of non-determinism"
