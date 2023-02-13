@@ -1,6 +1,9 @@
 # cosmos-sdk-codeql
 A query suite for common bug patterns in Cosmos SDK-based applications.
 
+## Passive Maintenance
+This repository is in a passive maintenance mode: it is not actively developed, but we will accept pull requests and issues. It may, however, take some time to respond.
+
 ## Usage
 In CodeQL CLI, you can download it using the following command:
 
