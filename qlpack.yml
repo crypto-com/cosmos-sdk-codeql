@@ -2,11 +2,12 @@
 library: false
 name: crypto-com/cosmos-sdk-codeql
 extractor: go
-version: 0.0.7
+version: 0.0.8
 description: A query suite for common bug patterns in Cosmos SDK-based applications
 default-suite:
     - query: src/bech32-constants.ql
     - query: src/beginendblock-panic.ql
+    - query: src/path-beginendblock-panic.ql
     - query: src/floating-point-ops.ql
     - query: src/goroutine.ql
     - query: src/map-iteration.ql
@@ -14,4 +15,4 @@ default-suite:
     - query: src/system-time.ql
 license: Apache 2
 dependencies:
-  codeql/go-all: 0.1.0
+  codeql/go-all: 0.3.6

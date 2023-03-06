@@ -2,6 +2,7 @@
  * @name Panic in BeginBock or EndBlock consensus methods
  * @description Panics in BeginBlocker and EndBlocker could cause a chain halt: https://docs.cosmos.network/master/building-modules/beginblock-endblock.html
  * @kind problem
+ * @precision low
  * @problem.severity warning
  * @id crypto-com/cosmos-sdk-codeql/beginendblock-panic
  * @tags correctness
@@ -17,41 +18,35 @@ predicate isBeginOrEndBlock(string funName) {
   funName = "EndBlocker"
 }
 
-
 predicate isIrrelevantPackage(string packageName) {
   // for normal cases, panics to cause chain halts are desired in crisis or upgrade
   // (but there may be unwanted cases, i.e. false negatives)
-  packageName = "crisis" or 
-  packageName = "upgrade" or 
+  packageName = "crisis" or
+  packageName = "upgrade" or
   packageName = "mocks"
 }
 
+class CallNodeWithFamily extends DataFlow::CallNode, DataFlow::Node {
+  CallNodeWithFamily() { this instanceof DataFlow::CallNode }
 
-class CallNodeWithFamily extends DataFlow::CallNode, DataFlow::Node  {
-
-  CallNodeWithFamily() {
-    this instanceof DataFlow::CallNode
-  }
- 
-  DataFlow::CallNode getParentCallNode (){
-    result.getACallee() = this.getRoot()
-  }  
+  DataFlow::CallNode getParentCallNode() { result.getACallee() = this.getRoot() }
 }
 
+/*
+ * This query looks for all calls to panic that originated from EndBlock or BeginBlock
+ * (as defined by the isBeginOrEndBlock predicate).
+ * It excludes potential false-positives (as defined by isLikelyFalsePositive predicate)
+ * and those stemming from irrelevant packages (as defined by isIrrelevantPackage predicate).
+ * It also exludes panics which are preceded by a comment containing the string "SAFE:".
+ */
 
-/* This query looks for all calls to panic that originated from EndBlock or BeginBlock
-(as defined by the isBeginOrEndBlock predicate).
-It excludes potential false-positives (as defined by isLikelyFalsePositive predicate) 
-and those stemming from irrelevant packages (as defined by isIrrelevantPackage predicate).
-It also exludes panics which are preceded by a comment containing the string "SAFE:".
-*/
 from CallNodeWithFamily panicCall, CallNodeWithFamily sourceCall
 where
   panicCall.getTarget().mustPanic() and
   sourceCall = panicCall.getParentCallNode*() and
-
   isBeginOrEndBlock(sourceCall.getEnclosingCallable().getName()) and
   not isIrrelevantPackage(panicCall.getFile().getPackageName()) and
+  not panicCall.getArgument(0).getStringValue() = "not implemented" and
   // explicit comment explaining why it is safe
   // TODO: extract to a common predicate or a class
   not exists(CommentGroup c |
@@ -63,4 +58,3 @@ where
   )
 select panicCall,
   "Possible panics in BeginBock- or EndBlock-related consensus methods could cause a chain halt"
-  
