@@ -16,6 +16,8 @@ predicate isIrrelevantPackage(string packageName) {
 from CallExpr call
 where
   call.getTarget().getQualifiedName() = "time.Now" and
+  not call.getParent().(CallExpr).getTarget().getQualifiedName() = "Round" and
+  not call.getParent*().(CallExpr).getTarget().getQualifiedName() = "UTC" and
   // string formatting is usually a false positive (used in logging etc.),
   // so it's usually ok to ignore.
   // but there could be false negatives (if the string formatting output is written to a consensus state)
@@ -46,4 +48,5 @@ where
   |
     c.getAComment().getText().matches("%SAFE:%")
   )
-select call, "Calling the system time may be a possible source of non-determinism"
+select call,
+  "Calling the system time may be a possible source of non-determinism. Use time.Now().Round(0).UTC() instead."
